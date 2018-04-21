@@ -69,7 +69,6 @@ YOLODLL_API Detector::Detector(std::string cfg_filename, std::string weight_file
 	}
 	set_batch_network(&net, 1);
 	net.gpu_index = cur_gpu_id;
-	fuse_conv_batchnorm(net);
 
 	layer l = net.layers[net.n - 1];
 	int j;
@@ -222,7 +221,7 @@ YOLODLL_API std::vector<bbox_t> Detector::detect(image_t img, float thresh, bool
 	int letterbox = 0;
 	float hier_thresh = 0.5;
 	detection *dets = get_network_boxes(&net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes, letterbox);
-	if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
+	if (nms) do_nms_sort_v3(dets, nboxes, l.classes, nms);
 
 	std::vector<bbox_t> bbox_vec;
 

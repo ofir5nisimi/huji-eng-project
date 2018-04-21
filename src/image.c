@@ -245,6 +245,8 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
 			box b = dets[i].bbox;
 			//printf("%f %f %f %f\n", b.x, b.y, b.w, b.h);
 
+
+
 			int left = (b.x - b.w / 2.)*im.w;
 			int right = (b.x + b.w / 2.)*im.w;
 			int top = (b.y - b.h / 2.)*im.h;
@@ -254,12 +256,6 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
 			if (right > im.w - 1) right = im.w - 1;
 			if (top < 0) top = 0;
 			if (bot > im.h - 1) bot = im.h - 1;
-
-			//int b_x_center = (left + right) / 2;
-			//int b_y_center = (top + bot) / 2;
-			//int b_width = right - left;
-			//int b_height = bot - top;
-			//sprintf(labelstr, "%d x %d - w: %d, h: %d", b_x_center, b_y_center, b_width, b_height);
 
 			draw_box_width(im, left, top, right, bot, width, red, green, blue);
 			if (alphabet) {
@@ -317,6 +313,19 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
             rgb[2] = blue;
             box b = boxes[i];
 
+   //          FILE *f = fopen("C:\\darknet-master\\result\\coordinates.txt", "w");
+			// if (f == NULL)
+			// {
+			//     printf("Error opening file!\n");
+			//     exit(1);
+			// }
+			// /* print integers and floats */
+			// int i = 1;
+			// float py = 3.1415927;
+			// fprintf(f, "x: %f, y: %f\n", b.x, b.y);
+			// /* printing single chatacters */
+			// fclose(f);
+
             int left  = (b.x-b.w/2.)*im.w;
             int right = (b.x+b.w/2.)*im.w;
             int top   = (b.y-b.h/2.)*im.h;
@@ -328,8 +337,8 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
             if(bot > im.h-1) bot = im.h-1;
 			printf("%s: %.0f%%", names[class_id], prob * 100);
 			
-			//printf(" - id: %d, x_center: %d, y_center: %d, width: %d, height: %d",
-			//	class_id, (right + left) / 2, (bot - top) / 2, right - left, bot - top);
+			// printf(" - id: %d, x_center: %d, y_center: %d, width: %d, height: %d",
+				// class_id, (right + left) / 2, (bot - top) / 2, right - left, bot - top);
 
 			printf("\n");
             draw_box_width(im, left, top, right, bot, width, red, green, blue);
@@ -387,7 +396,20 @@ void draw_detections_cv_v3(IplImage* show_img, detection *dets, int num, float t
 			rgb[1] = green;
 			rgb[2] = blue;
 			box b = dets[i].bbox;
-			//printf("%f %f %f %f\n", b.x, b.y, b.w, b.h);
+			printf("x: %f y: %f\n", b.x, b.y);
+			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			FILE *f = fopen("C:\\darknet-master\\build\\darknet\\x64\\results\\coordinates.txt", "a");
+			if (f == NULL)
+			{
+			    printf("Error opening file!\n");
+			    exit(1);
+			}
+			/* print integers and floats */
+			fprintf(f, "x: %f y: %f\n", b.x, b.y);
+			fclose(f);
+			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			// printf("%f %f %f %f\n", b.x, b.y, b.w, b.h);
+
 
 			int left = (b.x - b.w / 2.)*show_img->width;
 			int right = (b.x + b.w / 2.)*show_img->width;
@@ -398,12 +420,6 @@ void draw_detections_cv_v3(IplImage* show_img, detection *dets, int num, float t
 			if (right > show_img->width - 1) right = show_img->width - 1;
 			if (top < 0) top = 0;
 			if (bot > show_img->height - 1) bot = show_img->height - 1;
-
-			//int b_x_center = (left + right) / 2;
-			//int b_y_center = (top + bot) / 2;
-			//int b_width = right - left;
-			//int b_height = bot - top;
-			//sprintf(labelstr, "%d x %d - w: %d, h: %d", b_x_center, b_y_center, b_width, b_height);
 
 			float const font_size = show_img->height / 1000.F;
 			CvPoint pt1, pt2, pt_text, pt_text_bg1, pt_text_bg2;
@@ -430,7 +446,7 @@ void draw_detections_cv_v3(IplImage* show_img, detection *dets, int num, float t
 			black_color.val[0] = 0;
 			CvFont font;
 			cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, font_size, font_size, 0, font_size * 3, 8);
-			cvPutText(show_img, labelstr, pt_text, &font, black_color);
+			cvPutText(show_img, names[class_id], pt_text, &font, black_color);
 		}
 	}
 }
@@ -572,7 +588,7 @@ void draw_train_loss(IplImage* img, int img_size, float avg_loss, float max_img_
 	cvPutText(img, char_buff, pt1, &font, CV_RGB(0, 0, 0));
 	cvShowImage("average loss", img);
 	int k = cvWaitKey(20);
-	if (k == 's' || current_batch == (max_batches-1)) cvSaveImage("chart.jpg", img, 0);
+	if (k == 's') cvSaveImage("chart.jpg", img, 0);
 }
 #endif	// OPENCV
 

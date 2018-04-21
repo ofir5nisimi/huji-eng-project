@@ -177,7 +177,4 @@ void cuda_pull_array(float *x_gpu, float *x, size_t n)
 	cudaStreamSynchronize(get_cuda_stream());
 }
 
-#else // GPU
-#include "cuda.h"
-void cuda_set_device(int n) {}
-#endif // GPU
+#endif

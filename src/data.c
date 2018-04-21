@@ -302,15 +302,14 @@ void fill_truth_detection(char *path, int num_boxes, float *truth, int classes, 
     find_replace(labelpath, "raw", "labels", labelpath);
     find_replace(labelpath, ".jpg", ".txt", labelpath);
     find_replace(labelpath, ".png", ".txt", labelpath);
-	find_replace(labelpath, ".bmp", ".txt", labelpath);
     find_replace(labelpath, ".JPG", ".txt", labelpath);
     find_replace(labelpath, ".JPEG", ".txt", labelpath);
     int count = 0;
 	int i;
     box_label *boxes = read_boxes(labelpath, &count);
-	float lowest_w = 1.F / net_w;
-	float lowest_h = 1.F / net_h;
 	if (small_object == 1) {
+		float lowest_w = 1.F / net_w;
+		float lowest_h = 1.F / net_h;
 		for (i = 0; i < count; ++i) {
 			if (boxes[i].w < lowest_w) boxes[i].w = lowest_w;
 			if (boxes[i].h < lowest_h) boxes[i].h = lowest_h;
@@ -330,9 +329,7 @@ void fill_truth_detection(char *path, int num_boxes, float *truth, int classes, 
         id = boxes[i].id;
 
 		// not detect small objects
-		//if ((w < 0.001F || h < 0.001F)) continue;
-		// if truth (box for object) is smaller than 1x1 pix
-		if ((w < lowest_w || h < lowest_h)) continue;
+		if ((w < 0.001F || h < 0.001F)) continue;
 
         truth[i*5+0] = x;
         truth[i*5+1] = y;
